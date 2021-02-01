@@ -1,0 +1,6 @@
+-lib heaps
+-lib differ
+-lib hldx
+-hl Compiled/WesternGame.hl
+-main Main
+-debug
