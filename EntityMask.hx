@@ -20,24 +20,24 @@ class EntityMask {
         }
     }
 
-    public function transform(x: Float, y: Float) {
-        base.x += x;
-        base.y += y;
+    public function transform(offset: Vector2) {
+        base.x += offset.x;
+        base.y += offset.y;
 
         for(vertex in base.vertices) {
-            vertex.x += x;
-            vertex.y += y;
+            vertex.x += offset.x;
+            vertex.y += offset.y;
         }
     }
 
-    public function setPosition(x: Float, y: Float) {
-        base.x = x;
-        base.y = y;
+    public function setPosition(position: Vector2) {
+        base.x = position.x;
+        base.y = position.y;
 
         var index: Int = 0;
         for(vertex in base.vertices) {
-            vertex.x = x + offsets[index].x;
-            vertex.y = y + offsets[index].y; 
+            vertex.x = position.x + offsets[index].x;
+            vertex.y = position.y + offsets[index].y; 
             index++;
         }
     }

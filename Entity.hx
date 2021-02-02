@@ -1,3 +1,4 @@
+import h2d.Camera;
 import h2d.Scene;
 import differ.data.ShapeCollision;
 import differ.shapes.Polygon;
@@ -21,10 +22,37 @@ class Entity extends Object {
         
     }
 
-    public function moveAndCollide(moveX: Float, moveY: Float, entities: List<Entity>) { // Uses collision when I add them in
-        colShape.transform(moveX, moveY);
+    public function moveAndCollide(velocity: Vector2, entities: List<Entity>): Vector2 { // Uses collision when I add them in
+        // X axis collisions
+        while(isCollisionAt(new Vector2(x + velocity.x, y), entities)) {
+            velocity.x = Math.max(velocity.x - 1, 0);
+            if(velocity.x == 0) {
+                break;
+            }
+        }
+        
+        // Y axis collisions
+        while(isCollisionAt(new Vector2(x, y + velocity.y), entities)) {
+            velocity.y = Math.max(velocity.y - 1, 0);
+            if(velocity.y == 0) {
+                break;
+            }
+        }
 
+        setNewPos(new Vector2(x, y).add(velocity));
+        return velocity;
+    }
+
+    public function setNewPos(position: Vector2) {
+        setPosition(position.x, position.y);
+        colShape.setPosition(position);
+    }
+
+    public function isCollisionAt(position: Vector2, entities: List<Entity>): Bool {
+        colShape.setPosition(position);
+        
         var isCollision: Bool = false;
+        
         for(entity in entities) {
             if(entity != this) {
                 var shape: Polygon = entity.colShape.base;
@@ -36,16 +64,7 @@ class Entity extends Object {
             }
         }
 
-        if(isCollision) {
-            colShape.setPosition(x, y);
-        }
-        else {
-            setPosition(colShape.base.x, colShape.base.y);
-        }
-    }
-
-    public function setNewPos(newX: Float, newY: Float) {
-        setPosition(newX, newY);
-        colShape.setPosition(newX, newY);
+        colShape.setPosition(new Vector2(x, y));
+        return isCollision;
     }
 }

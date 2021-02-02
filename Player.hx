@@ -1,38 +1,59 @@
+import differ.math.Vector;
 import hxd.Key;
 import differ.ShapeDrawer;
 import differ.shapes.Polygon;
+import h2d.Object;
+import h2d.Bitmap;
 
 class Player extends Entity {
-    private var speed: Float = 60.0;
+    private var velocity: Vector2 = new Vector2();
+    private var speed: Float = 80.0;
+    private var acceleration: Float = 10.0;
     public var canMove: Bool = true;
+
+    public var sprite: Bitmap;
 
     public function new(scene: h2d.Scene) {
         super(scene);
-        colShape = new EntityMask(Polygon.square(x, y, 100, true));
+        colShape = new EntityMask(Polygon.square(x, y, 100, false));
         colShape.imprint();
+
+        sprite = new Bitmap(h2d.Tile.fromColor(0xFF0000, 50, 50), scene);
     }
     
     override function update(delta: Float) {
         super.update(delta);
 
-        var customGraphics = new h2d.Graphics(getScene());
-        customGraphics.beginFill(0xEA8220);
-        customGraphics.drawRect(x -25, y - 25, 50, 50);
-        customGraphics.endFill();
+        sprite.x = x;
+        sprite.y = y;
 
         if(canMove) {
-            if(Key.isDown(Key.W)) {
-                moveAndCollide(0, -speed*delta, otherEntites);
-            }
-            if(Key.isDown(Key.A)) {
-                moveAndCollide(-speed*delta, 0, otherEntites);
-            }
-            if(Key.isDown(Key.S)) {
-                moveAndCollide(0, speed*delta, otherEntites);
-            }
-            if(Key.isDown(Key.D)) {
-                moveAndCollide(speed*delta, 0, otherEntites);
-            }
+            getMovement(delta);
         }
+
     }
+
+    private function getMovement(delta: Float) {
+        var movementVector = new Vector2();
+
+        if(Key.isDown(Key.W)) {
+            movementVector.y -= 1;
+        }
+        if(Key.isDown(Key.A)) {
+            movementVector.x -= 1;
+        }
+        if(Key.isDown(Key.S)) {
+            movementVector.y += 1;
+        }
+        if(Key.isDown(Key.D)) {
+            movementVector.x += 1;
+        }
+        
+        movementVector = movementVector.normalized().multF(speed*delta);
+        
+        velocity = Interpolate.interpolateVector2(velocity, movementVector, acceleration*delta);
+        velocity = moveAndCollide(velocity, otherEntites);
+
+    }
+    
 }
