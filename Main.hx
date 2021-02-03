@@ -30,7 +30,7 @@ class Main extends hxd.App {
         player.name = "Player one";
         player2.name = "Player two";
         player2.canMove = false;
-        player2.setNewPos(new Vector2(300, 300));
+        player2.setNewPos(new Vector2(200, 200));
     }
 
     override function update(delta: Float) {
@@ -41,6 +41,7 @@ class Main extends hxd.App {
             entity.update(delta);
         }
 
+        // TODO: Move camera code to a level class and expand parameters
         camFollow.x = player.x + 25;
         camFollow.y = player.y + 25;
     }

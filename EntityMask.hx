@@ -7,10 +7,13 @@ class EntityMask {
 
     public function new(base: Polygon) {
         this.base = base;
+        imprint();
     }
 
+    // ! Must be called after every time you change the polygon otherwise
+    // ! you won't get correct results from the other functions
     public function imprint() {
-        // Gets each vertex pos relative to the x/y
+        // & Gets each vertex pos relative to the x/y
         offsets = [];
         for(vertex in base.vertices) {
             var xOffset: Float = vertex.x - base.x;

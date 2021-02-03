@@ -1,3 +1,4 @@
+import h2d.Graphics;
 import differ.math.Vector;
 import hxd.Key;
 import differ.ShapeDrawer;
@@ -15,8 +16,7 @@ class Player extends Entity {
 
     public function new(scene: h2d.Scene) {
         super(scene);
-        colShape = new EntityMask(Polygon.square(x, y, 100, false));
-        colShape.imprint();
+        colShape = new EntityMask(Polygon.square(x-50, y-50, 100, true));
 
         sprite = new Bitmap(h2d.Tile.fromColor(0xFF0000, 50, 50), scene);
     }
@@ -24,8 +24,8 @@ class Player extends Entity {
     override function update(delta: Float) {
         super.update(delta);
 
-        sprite.x = x;
-        sprite.y = y;
+        sprite.x = x - 25;
+        sprite.y = y - 25;
 
         if(canMove) {
             getMovement(delta);
@@ -33,6 +33,7 @@ class Player extends Entity {
 
     }
 
+    // & Makes the player move with WASD keys
     private function getMovement(delta: Float) {
         var movementVector = new Vector2();
 

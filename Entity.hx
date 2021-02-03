@@ -11,27 +11,42 @@ class Entity extends Object {
 
     public var colShape: EntityMask;
 
+    // ^ All entities in the scene. Used mostly for collisions
     public var otherEntites: List<Entity> = new List<Entity>();
     
+    // ^ To hold fractions for pixel perfect movement
+    private var subPixels: Vector2 = new Vector2();
+
     public function new(scene: Scene) {
         super();
         scene.addChild(this);
     }
 
-    public function update(delta: Float) { // Called every frame, to be overriden
+    // & Called every frame. To be overriden by a child.
+    public function update(delta: Float) { 
         
     }
 
+    // & Moves in a direction and stops to collide
     public function moveAndCollide(velocity: Vector2, entities: List<Entity>): Vector2 { // Uses collision when I add them in
-        // X axis collisions
+        // * Adds and stores subpixels
+        velocity = velocity.add(subPixels);
+        subPixels.x = velocity.x - Math.floor(velocity.x);
+        subPixels.y = velocity.y - Math.floor(velocity.y);
+        velocity.x = Math.floor(velocity.x);
+        velocity.y = Math.floor(velocity.y);
+        
+        // * X axis collisions
         while(isCollisionAt(new Vector2(x + velocity.x, y), entities)) {
             velocity.x = Math.max(velocity.x - 1, 0);
             if(velocity.x == 0) {
                 break;
             }
         }
+
+        setNewPos(new Vector2(x + velocity.x, y));
         
-        // Y axis collisions
+        // * Y axis collisions
         while(isCollisionAt(new Vector2(x, y + velocity.y), entities)) {
             velocity.y = Math.max(velocity.y - 1, 0);
             if(velocity.y == 0) {
@@ -39,15 +54,21 @@ class Entity extends Object {
             }
         }
 
-        setNewPos(new Vector2(x, y).add(velocity));
+        setNewPos(new Vector2(x, y + velocity.y));
         return velocity;
     }
 
     public function setNewPos(position: Vector2) {
+        subPixels.x += position.x - Math.floor(position.x);
+        subPixels.y += position.y - Math.floor(position.y);
+        position.x = Math.floor(position.x);
+        position.y = Math.floor(position.y);
+
         setPosition(position.x, position.y);
         colShape.setPosition(position);
     }
 
+    // & Checks collisions with all other entities
     public function isCollisionAt(position: Vector2, entities: List<Entity>): Bool {
         colShape.setPosition(position);
         
