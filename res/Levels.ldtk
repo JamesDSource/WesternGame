@@ -134,7 +134,7 @@
 					"autoLayerTiles": [],
 					"seed": 7254264,
 					"gridTiles": [],
-					"entityInstances": [{ "__identifier": "Player", "__grid": [4,7], "__pivot": [0.5,0.5], "__tile": null, "defUid": 4, "px": [72,120], "fieldInstances": [] }]
+					"entityInstances": [{ "__identifier": "Player", "__grid": [4,17], "__pivot": [0.5,0.5], "__tile": null, "defUid": 4, "px": [72,280], "fieldInstances": [] }]
 				},
 				{
 					"__identifier": "Collisions",
