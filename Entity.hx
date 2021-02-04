@@ -1,15 +1,21 @@
+import differ.sat.SAT2D;
+import h2d.Layers;
 import h2d.Camera;
 import h2d.Scene;
 import differ.data.ShapeCollision;
 import differ.shapes.Polygon;
-import differ.Collision;
+import collisions.Collisions;
 import h2d.Object;
+import collisions.CollisionPolygon;
 
 class Entity extends Object {
     public var hitPointsMax: Float = 100;
     public var hitPoints: Float = 100;
 
-    public var colShape: EntityMask;
+    public var colShape: CollisionPolygon;
+
+    private var layers: Layers = null;
+    private var layer: Int = 0;
 
     // ^ All entities in the scene. Used mostly for collisions
     public var otherEntites: List<Entity> = new List<Entity>();
@@ -17,9 +23,11 @@ class Entity extends Object {
     // ^ To hold fractions for pixel perfect movement
     private var subPixels: Vector2 = new Vector2();
 
-    public function new(scene: Scene) {
+    public function new(layers: Layers, layer: Int) {
         super();
-        scene.addChild(this);
+        this.layers = layers;
+        this.layer = layer;
+        layers.add(this, layer);
     }
 
     // & Called every frame. To be overriden by a child.
@@ -28,7 +36,7 @@ class Entity extends Object {
     }
 
     // & Moves in a direction and stops to collide
-    public function moveAndCollide(velocity: Vector2, entities: List<Entity>): Vector2 { // Uses collision when I add them in
+    public function moveAndCollide(velocity: Vector2, entities: List<Entity>): Vector2 {
         // * Adds and stores subpixels
         velocity = velocity.add(subPixels);
         subPixels.x = velocity.x - Math.floor(velocity.x);
@@ -65,27 +73,30 @@ class Entity extends Object {
         position.y = Math.floor(position.y);
 
         setPosition(position.x, position.y);
-        colShape.setPosition(position);
+        colShape.x = position.x;
+        colShape.y = position.y;
     }
 
     // & Checks collisions with all other entities
     public function isCollisionAt(position: Vector2, entities: List<Entity>): Bool {
-        colShape.setPosition(position);
+        colShape.x = position.x;
+        colShape.y = position.y;
         
         var isCollision: Bool = false;
         
         for(entity in entities) {
             if(entity != this) {
-                var shape: Polygon = entity.colShape.base;
-                var colTest = colShape.base.test(shape);
+                var colTest: Bool = Collisions.polyWithPoly(colShape, entity.colShape);
 
-                if(colTest != null) {
+                if(colTest) {
                     isCollision = true;
+                    break;
                 }
             }
         }
 
-        colShape.setPosition(new Vector2(x, y));
+        colShape.x = x;
+        colShape.y = y;
         return isCollision;
     }
 }

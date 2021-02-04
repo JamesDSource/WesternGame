@@ -1,6 +1,8 @@
 -lib heaps
 -lib differ
 -lib hldx
+-lib ldtk-haxe-api
+-lib quadtree
 -hl Compiled/WesternGame.hl
 -main Main
 -debug

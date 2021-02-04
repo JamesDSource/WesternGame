@@ -7,41 +7,22 @@ class EntityMask {
 
     public function new(base: Polygon) {
         this.base = base;
-        imprint();
-    }
-
-    // ! Must be called after every time you change the polygon otherwise
-    // ! you won't get correct results from the other functions
-    public function imprint() {
-        // & Gets each vertex pos relative to the x/y
-        offsets = [];
-        for(vertex in base.vertices) {
-            var xOffset: Float = vertex.x - base.x;
-            var yOffset: Float = vertex.y - base.y;
-
-            offsets.push(new Vector(xOffset, yOffset));
-        }
     }
 
     public function transform(offset: Vector2) {
+        setPosition(new Vector2(base.x + offset.x, base.y + offset.y));
+    }
+
+    public function setPosition(position: Vector2) {
+        var offset = position.subtract(new Vector2(base.x, base.y));
+
         base.x += offset.x;
         base.y += offset.y;
 
         for(vertex in base.vertices) {
             vertex.x += offset.x;
-            vertex.y += offset.y;
+            vertex.y += offset.y; 
         }
     }
 
-    public function setPosition(position: Vector2) {
-        base.x = position.x;
-        base.y = position.y;
-
-        var index: Int = 0;
-        for(vertex in base.vertices) {
-            vertex.x = position.x + offsets[index].x;
-            vertex.y = position.y + offsets[index].y; 
-            index++;
-        }
-    }
 }

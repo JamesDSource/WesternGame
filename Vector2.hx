@@ -19,7 +19,8 @@ class Vector2 {
     public function normalized(): Vector2 {
         var length = getLength();
 
-        if(length > 0) { // * Keeping the length 0 if it is
+        // * Keeping the length 0 if it is
+        if(length > 0) {
             var normX = x/length;
             var normY = y/length;
             return new Vector2(normX, normY);
@@ -29,9 +30,17 @@ class Vector2 {
         }    
     }
 
+    public function getDotProduct(vector2: Vector2): Float {
+        return x*vector2.x + y*vector2.y;
+    }
+
     public function distanceTo(vector2: Vector2): Float {
         var difference = subtract(vector2);
         return difference.getLength();
+    }
+
+    public function clone(): Vector2 {
+        return new Vector2(x, y);
     }
 
     // & Vector math functions

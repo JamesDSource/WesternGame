@@ -1,7 +1,11 @@
+import quadtree.QuadTree;
+import h2d.Layers;
 import h2d.Camera;
 import differ.shapes.Polygon;
 import h2d.Graphics;
 import h2d.Object;
+import ldtk.Project;
+import levels.LDTKLevels;
 
 class Main extends hxd.App {
     public var entities: List<Entity> = new List<Entity>();
@@ -13,6 +17,14 @@ class Main extends hxd.App {
     public var player2: Player;
 
     override function init() {
+
+        var layers = new Layers();
+        s2d.addChild(layers);
+
+        var levels = new LDTKLevels();
+        var render = levels.all_levels.Test.l_Collisions.render();
+        layers.add(render, 0);
+
         cam = s2d.camera;
         camFollow = new Object();
         s2d.addChild(camFollow);
@@ -23,8 +35,8 @@ class Main extends hxd.App {
 
         s2d.scaleMode = Stretch(960, 540);
 
-        player = new Player(s2d);
-        player2 = new Player(s2d);
+        player = new Player(s2d, 1);
+        player2 = new Player(layers, 1);
         entities.add(player);
         entities.add(player2);
         player.name = "Player one";
