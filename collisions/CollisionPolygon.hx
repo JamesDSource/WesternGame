@@ -2,6 +2,7 @@ package collisions;
 
 import collisions.CollisionShape;
 
+// TODO: Make scaling and rotation work
 class CollisionPolygon implements CollisionShape {
     private var shapeName = "Polygon";
 

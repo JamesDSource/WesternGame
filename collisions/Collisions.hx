@@ -1,6 +1,6 @@
 package collisions;
 
-class Collisions {
+class Collisions { // TODO: Add cirle/poly, circle/circle, ray/poly, ray/ray, and ray/circle collisions
     // & Checks for a collision between two polygons
     public static function polyWithPoly(polygon1: CollisionPolygon, polygon2: CollisionPolygon): Bool {
         var poly1: CollisionPolygon;

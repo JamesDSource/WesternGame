@@ -53,6 +53,7 @@ class Player extends Entity {
     }
 
     // & Makes the player move with WASD keys
+    // TODO: Turn this top down movement into platformer movement
     private function getMovement(delta: Float) {
         var movementVector = new Vector2();
 
