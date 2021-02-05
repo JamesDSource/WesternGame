@@ -5,6 +5,8 @@ class CollisionRay implements CollisionShape {
     public var x: Float;
     public var y: Float;
 
+    public var active: Bool = true;
+
     private var radius: Float = 0;
 
     // ^ Cast points are set in local coordinates

@@ -7,13 +7,22 @@ import h2d.Scene;
 import h2d.Object;
 import levels.LDTKLevels;
 import levels.LDTKLevels.Entity_Player;
+import collisions.CollisionShape;
 
 class Screen {
     public var scene: Scene = null;
 
     public var layers: Layers;
     public var level: LDTKLevels_Level;
-    public var entities: Array<Entity> = new Array<Entity>();
+
+    public var entities: Array<Entity>;
+
+    // ^ All collision shapes in the scene
+    // ! Collision shapes that are in use are managed by the entities in the scene. 
+    // ! They should be added whenever created, and removed before they are destroyed.
+    // ! Otherwise collision detection will check shapes that don't exist anymore, or 
+    // ! will not check shapes that are in use
+    public var collisionShapes: Array<CollisionShape>;
     
     public var cam: Camera;
     public var camFollow: Object;
@@ -33,6 +42,8 @@ class Screen {
         }
 
         scene = new Scene();
+        collisionShapes = [];
+        entities = [];
         
         // * Setting up the camera
         cam = scene.camera;
@@ -49,18 +60,27 @@ class Screen {
         layers = new Layers();
         scene.addChild(layers);
 
+        // * Static collisions
         var collisionRender = level.l_Collisions.render();
         layers.add(collisionRender, 0);
 
         // * Player
         var players: Array<Entity_Player> = level.l_Entities.all_Player;
-        for(player in players) {
+        for(playerEnt in players) {
+            var player = new Player(this);
+            player.setNewPos(new Vector2(playerEnt.pixelX, playerEnt.pixelY));
 
+            // * Adding to the scene
+            layers.add(player, 1);
+            entities.push(player);
+            cam.follow = player;
         }
 
     }
 
     public function update(delta: Float) {
-
+        for(entity in entities) {
+            entity.update(delta);
+        }
     }
 }

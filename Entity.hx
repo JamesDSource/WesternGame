@@ -1,3 +1,4 @@
+import collisions.CollisionShape;
 import differ.sat.SAT2D;
 import h2d.Layers;
 import h2d.Camera;
@@ -7,6 +8,7 @@ import differ.shapes.Polygon;
 import collisions.Collisions;
 import h2d.Object;
 import collisions.CollisionPolygon;
+import levels.Screen;
 
 class Entity extends Object {
     public var hitPointsMax: Float = 100;
@@ -14,8 +16,7 @@ class Entity extends Object {
 
     public var colShape: CollisionPolygon;
 
-    private var layers: Layers = null;
-    private var layer: Int = 0;
+    private var screen: Screen;
 
     // ^ All entities in the scene. Used mostly for collisions
     public var otherEntites: List<Entity> = new List<Entity>();
@@ -23,11 +24,9 @@ class Entity extends Object {
     // ^ To hold fractions for pixel perfect movement
     private var subPixels: Vector2 = new Vector2();
 
-    public function new(layers: Layers, layer: Int) {
+    public function new(screen: Screen) {
         super();
-        this.layers = layers;
-        this.layer = layer;
-        layers.add(this, layer);
+        this.screen = screen;
     }
 
     // & Called every frame. To be overriden by a child.
@@ -45,7 +44,7 @@ class Entity extends Object {
         velocity.y = Math.floor(velocity.y);
         
         // * X axis collisions
-        while(isCollisionAt(new Vector2(x + velocity.x, y), entities)) {
+        while(isCollisionAt(new Vector2(x + velocity.x, y), screen.collisionShapes)) {
             velocity.x = Math.max(velocity.x - 1, 0);
             if(velocity.x == 0) {
                 break;
@@ -55,7 +54,7 @@ class Entity extends Object {
         setNewPos(new Vector2(x + velocity.x, y));
         
         // * Y axis collisions
-        while(isCollisionAt(new Vector2(x, y + velocity.y), entities)) {
+        while(isCollisionAt(new Vector2(x, y + velocity.y), screen.collisionShapes)) {
             velocity.y = Math.max(velocity.y - 1, 0);
             if(velocity.y == 0) {
                 break;
@@ -78,15 +77,19 @@ class Entity extends Object {
     }
 
     // & Checks collisions with all other entities
-    public function isCollisionAt(position: Vector2, entities: List<Entity>): Bool {
+    public function isCollisionAt(position: Vector2, shapes: Array<CollisionShape>): Bool {
+        if(!colShape.active) {
+            return false;
+        }
+        
         colShape.x = position.x;
         colShape.y = position.y;
         
         var isCollision: Bool = false;
         
-        for(entity in entities) {
-            if(entity != this) {
-                var colTest: Bool = Collisions.polyWithPoly(colShape, entity.colShape);
+        for(shape in shapes) {
+            if(shape != colShape && shape.active) {
+                var colTest: Bool = colShape.testWith(shape);
 
                 if(colTest) {
                     isCollision = true;

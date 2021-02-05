@@ -9,6 +9,8 @@ class CollisionPolygon implements CollisionShape {
     public var x: Float;
     public var y: Float;
     
+    public var active: Bool = true;
+
     private var radius: Float = 0.0;
 
     // ^ The points that define the polygon
@@ -62,8 +64,9 @@ class CollisionPolygon implements CollisionShape {
     public function testWith(collisionShape: CollisionShape): Bool {
         switch shapeName {
             case "Polygon":
-                return false;
+                return Collisions.polyWithPoly(this, cast(collisionShape, CollisionPolygon));
             default:
+                Sys.println('Unknown shape tested with $this');
                 return false;
         }
     }

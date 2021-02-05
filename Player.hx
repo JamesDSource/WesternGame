@@ -1,15 +1,12 @@
-import h3d.shader.ColorAdd;
 import h2d.Tile;
 import hxd.Res;
 import h2d.Graphics;
-import differ.math.Vector;
 import hxd.Key;
-import differ.ShapeDrawer;
-import differ.shapes.Polygon;
 import h2d.Object;
 import h2d.Bitmap;
 import h2d.Layers;
 import collisions.CollisionPolygon;
+import levels.Screen;
 
 class Player extends Entity {
     private var velocity: Vector2 = new Vector2();
@@ -25,8 +22,8 @@ class Player extends Entity {
     public var vSprite4: Bitmap;
     public var vSprite5: Bitmap;
 
-    public function new(layers: Layers, layer: Int) {
-        super(layers, layer);
+    public function new(screen: Screen) {
+        super(screen);
         var size = 16;
         colShape = new CollisionPolygon(x, y);
 
@@ -37,6 +34,7 @@ class Player extends Entity {
         verts.push(new Vector2(x-size/2, y+size/2));
 
         colShape.setVerticies(verts);
+        screen.collisionShapes.push(colShape);
 
         sprite = new Bitmap(Res.CollisionTile.toTile());
         sprite.x = x - size/2;
