@@ -75,7 +75,6 @@ class Screen {
             entities.push(player);
             cam.follow = player;
         }
-
     }
 
     public function update(delta: Float) {

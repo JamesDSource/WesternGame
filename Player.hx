@@ -15,13 +15,7 @@ class Player extends Entity {
     public var canMove: Bool = true;
 
     public var sprite: Bitmap;
-
-    public var vSprite1: Bitmap;
-    public var vSprite2: Bitmap;
-    public var vSprite3: Bitmap;
-    public var vSprite4: Bitmap;
-    public var vSprite5: Bitmap;
-
+    
     public function new(screen: Screen) {
         super(screen);
         var size = 16;
