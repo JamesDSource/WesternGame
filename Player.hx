@@ -23,9 +23,9 @@ class Player extends Entity {
 
         var verts: Array<Vector2> = [];
         verts.push(new Vector2(x-size/2, y-size/2));
-        verts.push(new Vector2(x+size/2, y-size/2));
-        verts.push(new Vector2(x+size/2, y+size/2));
-        verts.push(new Vector2(x-size/2, y+size/2));
+        verts.push(new Vector2(x+size/2 - 1, y-size/2));
+        verts.push(new Vector2(x+size/2 - 1, y+size/2 - 1));
+        verts.push(new Vector2(x-size/2, y+size/2 - 1));
 
         colShape.setVerticies(verts);
         screen.collisionShapes.push(colShape);
@@ -65,7 +65,7 @@ class Player extends Entity {
         movementVector = movementVector.normalized().multF(speed*delta);
         
         velocity = Interpolate.interpolateVector2(velocity, movementVector, acceleration*delta);
-        velocity = moveAndCollide(velocity, otherEntites);
+        velocity = moveAndCollide(velocity);
     }
     
 }

@@ -1,5 +1,8 @@
 package levels;
 
+import h2d.Graphics;
+import collisions.CollisionPolygon;
+import ldtk.Tileset;
 import ldtk.Layer;
 import h2d.Layers;
 import h2d.Camera;
@@ -61,8 +64,41 @@ class Screen {
         scene.addChild(layers);
 
         // * Static collisions
-        var collisionRender = level.l_Collisions.render();
+        var collisionLayer = level.l_Collisions;
+        var collisionRender = collisionLayer.render();
         layers.add(collisionRender, 0);
+        var tileSize = collisionLayer.gridSize;
+        for(i in 0...collisionLayer.cHei) {
+            var orgPoint: Vector2 = null;
+            var colLength = 1;
+            for(j in 0...collisionLayer.cWid) {
+                var hasTile = collisionLayer.hasAnyTileAt(j, i);
+                if(hasTile) {
+                    if(orgPoint == null) {
+                        orgPoint =  new Vector2(j * tileSize, i * tileSize);
+                        colLength = 1;
+                    }
+                    else {
+                        colLength++;
+                    }
+                }
+                if((j >= collisionLayer.cWid - 1 || !hasTile) && orgPoint != null) {
+                    var verts: Array<Vector2> = [];
+
+                    verts.push(new Vector2());
+                    verts.push(new Vector2(colLength*tileSize - 1, 0));
+                    verts.push(new Vector2(colLength*tileSize - 1, tileSize - 1));
+                    verts.push(new Vector2(0, tileSize - 1));
+
+                    var staticColPoly = new CollisionPolygon(orgPoint.x, orgPoint.y);
+                    staticColPoly.setVerticies(verts);
+                    collisionShapes.push(staticColPoly);
+
+                    orgPoint = null;
+                    colLength = 1;
+                }
+            }
+        }
 
         // * Player
         var players: Array<Entity_Player> = level.l_Entities.all_Player;
@@ -74,6 +110,15 @@ class Screen {
             layers.add(player, 1);
             entities.push(player);
             cam.follow = player;
+        }
+
+        for(shape in collisionShapes) {
+            var newShape = cast(shape, CollisionPolygon);
+            for(point in newShape.getGlobalTransformedVerticies()) {
+                var spr = new h2d.Bitmap(h2d.Tile.fromColor(0x0000FF), scene);
+                spr.x = point.x;
+                spr.y = point.y;
+            }
         }
     }
 

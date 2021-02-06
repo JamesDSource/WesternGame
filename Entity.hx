@@ -35,7 +35,7 @@ class Entity extends Object {
     }
 
     // & Moves in a direction and stops to collide
-    public function moveAndCollide(velocity: Vector2, entities: List<Entity>): Vector2 {
+    public function moveAndCollide(velocity: Vector2): Vector2 {
         // * Adds and stores subpixels
         velocity = velocity.add(subPixels);
         subPixels.x = velocity.x - Math.floor(velocity.x);
@@ -50,7 +50,7 @@ class Entity extends Object {
                 break;
             }
         }
-
+        
         setNewPos(new Vector2(x + velocity.x, y));
         
         // * Y axis collisions

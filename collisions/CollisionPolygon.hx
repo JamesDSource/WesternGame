@@ -11,7 +11,7 @@ class CollisionPolygon implements CollisionShape {
     
     public var active: Bool = true;
 
-    private var radius: Float = 0.0;
+    private var radius: Float;
 
     // ^ The points that define the polygon
     // * All verticies are relative to the x/y position
@@ -83,15 +83,14 @@ class CollisionPolygon implements CollisionShape {
         this.verticies = verticies;
         transformedVerticies = verticies;
 
-        var radius: Float = 0.0;
+        radius = 0.0;
         for(vertex in this.verticies) {
             var len: Float = vertex.getLength();
             
             if(len > radius) {
-                radius = len;
+                radius = Math.ceil(len);
             }
 
         }
-
     }
 }

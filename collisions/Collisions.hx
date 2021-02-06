@@ -3,6 +3,10 @@ package collisions;
 class Collisions { // TODO: Add cirle/poly, circle/circle, ray/poly, ray/ray, and ray/circle collisions
     // & Checks for a collision between two polygons
     public static function polyWithPoly(polygon1: CollisionPolygon, polygon2: CollisionPolygon): Bool {
+        if(!radiusIntersection(new Vector2(polygon1.x, polygon1.y), new Vector2(polygon2.x, polygon2.y), polygon1.getRadius(), polygon2.getRadius())) {
+            return false;
+        }
+
         var poly1: CollisionPolygon;
         var poly2: CollisionPolygon;
 
@@ -50,6 +54,11 @@ class Collisions { // TODO: Add cirle/poly, circle/circle, ray/poly, ray/ray, an
 
         }
         return true;
+    }
+
+    private static function radiusIntersection(pos1: Vector2, pos2: Vector2, radius1: Float, radius2: Float): Bool {
+        var distance = pos1.subtract(pos2).getLength();
+        return distance < radius1 + radius2;
     }
 
 }
