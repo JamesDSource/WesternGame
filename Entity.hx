@@ -18,6 +18,8 @@ class Entity extends Object {
 
     private var screen: Screen;
 
+    public var deltaMult: Float = 0.0;
+
     // ^ All entities in the scene. Used mostly for collisions
     public var otherEntites: List<Entity> = new List<Entity>();
     
@@ -31,7 +33,7 @@ class Entity extends Object {
 
     // & Called every frame. To be overriden by a child.
     public function update(delta: Float) { 
-        
+        deltaMult = delta;
     }
 
     // & Moves in a direction and stops to collide
@@ -102,4 +104,5 @@ class Entity extends Object {
         colShape.y = y;
         return isCollision;
     }
+
 }

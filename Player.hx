@@ -10,8 +10,8 @@ import levels.Screen;
 
 class Player extends Entity {
     private var velocity: Vector2 = new Vector2();
-    private var speed: Float = 80.0;
-    private var acceleration: Float = 10.0;
+    private var speed: Float = 3.0;
+    private var acceleration: Float = 0.5;
     public var canMove: Bool = true;
 
     public var sprite: Bitmap;
@@ -45,27 +45,27 @@ class Player extends Entity {
     }
 
     // & Makes the player move with WASD keys
-    // TODO: Turn this top down movement into platformer movement
     private function getMovement(delta: Float) {
         var movementVector = new Vector2();
 
-        if(Key.isDown(Key.W)) {
-            movementVector.y -= 1;
-        }
         if(Key.isDown(Key.A)) {
             movementVector.x -= 1;
-        }
-        if(Key.isDown(Key.S)) {
-            movementVector.y += 1;
         }
         if(Key.isDown(Key.D)) {
             movementVector.x += 1;
         }
         
-        movementVector = movementVector.normalized().multF(speed*delta);
+        movementVector = movementVector.normalized().multF(speed);
         
-        velocity = Interpolate.interpolateVector2(velocity, movementVector, acceleration*delta);
+        velocity.x = Interpolate.interpolateF(velocity.x, movementVector.x, acceleration*delta);
+        velocity.y += Constants.GRAVITY*delta;
+        
+        // * Jump
+        if(Key.isPressed(Key.W) && isCollisionAt(new Vector2(x, y + 1), screen.collisionShapes)) {
+            velocity.y = -6;
+        }
+        
+        velocity = velocity.multF(delta);
         velocity = moveAndCollide(velocity);
     }
-    
 }
