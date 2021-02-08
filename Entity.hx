@@ -20,6 +20,7 @@ class Entity extends Object {
 
     public var deltaMult: Float = 0.0;
 
+
     // ^ All entities in the scene. Used mostly for collisions
     public var otherEntites: List<Entity> = new List<Entity>();
     
@@ -74,8 +75,7 @@ class Entity extends Object {
         position.y = Math.floor(position.y);
 
         setPosition(position.x, position.y);
-        colShape.x = position.x;
-        colShape.y = position.y;
+        colShape.syncPos();
     }
 
     // & Checks collisions with all other entities
@@ -84,8 +84,10 @@ class Entity extends Object {
             return false;
         }
         
-        colShape.x = position.x;
-        colShape.y = position.y;
+        var oldColShapePos: Vector2 = new Vector2(colShape.x, colShape.y);
+
+        colShape.x = position.x - x;
+        colShape.y = position.y - y;
         
         var isCollision: Bool = false;
         
@@ -100,8 +102,8 @@ class Entity extends Object {
             }
         }
 
-        colShape.x = x;
-        colShape.y = y;
+        colShape.x = oldColShapePos.x;
+        colShape.y = oldColShapePos.y;
         return isCollision;
     }
 

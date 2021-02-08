@@ -1,18 +1,11 @@
 package collisions;
 
+import h2d.Tile;
+import h2d.Bitmap;
 import collisions.CollisionShape;
 
 // TODO: Make scaling and rotation work
-class CollisionPolygon implements CollisionShape {
-    private var shapeName = "Polygon";
-
-    public var x: Float;
-    public var y: Float;
-    
-    public var active: Bool = true;
-
-    private var radius: Float;
-
+class CollisionPolygon extends CollisionShape {
     // ^ The points that define the polygon
     // * All verticies are relative to the x/y position
     private var verticies: Array<Vector2> = [];
@@ -20,11 +13,12 @@ class CollisionPolygon implements CollisionShape {
     private var transformedVerticies: Array<Vector2> = [];
 
     // ^ Transformation data
-    private var scale: Vector2 = new Vector2(1.0, 1.0);
+    private var polyScale: Vector2 = new Vector2(1.0, 1.0);
+    private var polyRotation: Float = 0;
 
     public function new(x: Float, y: Float) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
+        shapeName = "Polygon";
     }
 
     public function getVerticies(): Array<Vector2> {
@@ -44,10 +38,11 @@ class CollisionPolygon implements CollisionShape {
     }
 
     public function getGlobalTransformedVerticies(): Array<Vector2> {
+        syncPos();
         var returnVerticies: Array<Vector2> = getTransformedVerticies();
         for(vert in returnVerticies) {
-            vert.x += x;
-            vert.y += y;
+            vert.x += absX;
+            vert.y += absY;
         }
         return returnVerticies;
     }
@@ -56,16 +51,12 @@ class CollisionPolygon implements CollisionShape {
         return radius;
     }
 
-    public function setRotation(degrees: Float): Void {
+    public function setPolyRotation(degrees: Float): Void {
 
     }
 
-    public function setScale(scaleFactor: Vector2) {
-        for(vertex in verticies) {
-            vertex = vertex.mult(scaleFactor);
-        }
+    public function setPolyScale(scaleFactor: Vector2) {
 
-        radius *= Math.max(scaleFactor.x, scaleFactor.y);
     }
 
     public function setVerticies(verticies: Array<Vector2>) {
@@ -80,6 +71,14 @@ class CollisionPolygon implements CollisionShape {
                 radius = Math.ceil(len);
             }
 
+        }
+    }
+
+    public function represent() {
+        for(vertex in verticies) {
+            var spr = new Bitmap(Tile.fromColor(0x0000FF), this);
+            spr.x = vertex.x;
+            spr.y = vertex.y;
         }
     }
 }

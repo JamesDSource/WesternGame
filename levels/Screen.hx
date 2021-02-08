@@ -92,6 +92,7 @@ class Screen {
                     }
                     var staticColShape = new CollisionPolygon(org.x, org.y);
                     staticColShape.setVerticies(verts);
+                    layers.add(staticColShape, 2);
                     collisionShapes.push(staticColShape);
                 }
             }
@@ -111,11 +112,7 @@ class Screen {
 
         for(shape in collisionShapes) {
             var newShape = cast(shape, CollisionPolygon);
-            for(point in newShape.getGlobalTransformedVerticies()) {
-                var spr = new h2d.Bitmap(h2d.Tile.fromColor(0x0000FF), scene);
-                spr.x = point.x;
-                spr.y = point.y;
-            }
+            newShape.represent();
         }
     }
 

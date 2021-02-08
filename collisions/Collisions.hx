@@ -13,7 +13,9 @@ class Collisions { // TODO: Add cirle/poly, circle/circle, ray/poly, ray/ray, an
 
     // & Checks for a collision between two polygons
     public static function polyWithPoly(polygon1: CollisionPolygon, polygon2: CollisionPolygon): Bool {
-        if(!radiusIntersection(new Vector2(polygon1.x, polygon1.y), new Vector2(polygon2.x, polygon2.y), polygon1.getRadius(), polygon2.getRadius())) {
+        var absPos1 = polygon1.getAbsPosition();
+        var absPos2 = polygon2.getAbsPosition();
+        if(!radiusIntersection(absPos1, absPos2, polygon1.getRadius(), polygon2.getRadius())) {
             return false;
         }
 

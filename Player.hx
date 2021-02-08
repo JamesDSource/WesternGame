@@ -1,3 +1,4 @@
+import collisions.CollisionRay;
 import h2d.Tile;
 import hxd.Res;
 import h2d.Graphics;
@@ -15,6 +16,8 @@ class Player extends Entity {
     public var canMove: Bool = true;
 
     public var sprite: Bitmap;
+
+    public var pushRay: CollisionRay;
     
     public function new(screen: Screen) {
         super(screen);
@@ -25,16 +28,27 @@ class Player extends Entity {
         sprite.y = y - tile.height;
         addChild(sprite);
 
+        var pushRayHeight: Float = 20;
+        var colShapeHeight: Float = tile.height - pushRayHeight;
+        var colShapeWidth: Float = 20;
+
+        // * Collision polygon
         var colPoly: CollisionPolygon = new CollisionPolygon(x, y);
         var verts: Array<Vector2> = [];
-        verts.push(new Vector2(-20/2, -tile.height));
-        verts.push(new Vector2(20/2 - 1, -tile.height));
-        verts.push(new Vector2(20/2 - 1, -tile.height + 22));
-        verts.push(new Vector2(-20/2,  -tile.height + 22));
-
+        verts.push(new Vector2(-colShapeWidth/2, -tile.height));
+        verts.push(new Vector2(colShapeWidth/2 - 1, -tile.height));
+        verts.push(new Vector2(colShapeWidth/2 - 1, -tile.height + colShapeHeight));
+        verts.push(new Vector2(-colShapeWidth/2,  -tile.height + colShapeHeight));
+        
         colPoly.setVerticies(verts);
         colShape = colPoly;
+        addChild(colShape);
         screen.collisionShapes.push(colShape);
+
+        // * Push ray
+        pushRay = new CollisionRay(x, y - colShapeHeight);
+        pushRay.setCastPoint(new Vector2(0, colShapeHeight-1));
+        addChild(pushRay);
     }
     
     override function update(delta: Float) {
