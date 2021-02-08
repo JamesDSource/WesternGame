@@ -2,10 +2,26 @@ package collisions;
 
 class Collisions { // TODO: Add cirle/poly, circle/circle, ray/poly, ray/ray, and ray/circle collisions
     public static function test(shape1: CollisionShape, shape2: CollisionShape): Bool {
+        var absPos1 = shape1.getAbsPosition();
+        var absPos2 = shape2.getAbsPosition();
+        if(!radiusIntersection(absPos1, absPos2, shape1.getRadius(), shape2.getRadius())) {
+            return false;
+        }
+
+        // * Poly with poly
         if(Std.isOfType(shape1, CollisionPolygon) && Std.isOfType(shape2, CollisionPolygon)) {
             return polyWithPoly(cast(shape1, CollisionPolygon), cast(shape2, CollisionPolygon));
         }
+        // * Poly with ray
+        else if(Std.isOfType(shape1, CollisionPolygon) && Std.isOfType(shape2, CollisionRay)) {
+            return polyWithRay(cast(shape1, CollisionPolygon), cast(shape2, CollisionRay));
+        }
+        // * Ray with poly
+        else if(Std.isOfType(shape1, CollisionRay) && Std.isOfType(shape2, CollisionPolygon)) {
+            return polyWithRay(cast(shape2, CollisionPolygon), cast(shape1, CollisionRay));
+        }
         else {
+            Sys.println("Unknown collision combination");
             return false;
         }
     }
@@ -13,12 +29,6 @@ class Collisions { // TODO: Add cirle/poly, circle/circle, ray/poly, ray/ray, an
 
     // & Checks for a collision between two polygons
     public static function polyWithPoly(polygon1: CollisionPolygon, polygon2: CollisionPolygon): Bool {
-        var absPos1 = polygon1.getAbsPosition();
-        var absPos2 = polygon2.getAbsPosition();
-        if(!radiusIntersection(absPos1, absPos2, polygon1.getRadius(), polygon2.getRadius())) {
-            return false;
-        }
-
         var poly1: CollisionPolygon;
         var poly2: CollisionPolygon;
 
@@ -66,6 +76,19 @@ class Collisions { // TODO: Add cirle/poly, circle/circle, ray/poly, ray/ray, an
 
         }
         return true;
+    }
+
+    public static function polyWithRay(poly: CollisionPolygon, ray: CollisionRay): Bool {
+        var verticies: Array<Vector2> = poly.getGlobalTransformedVerticies();
+        for(i in 0...verticies.length) {
+            var vertex1: Vector2 = verticies[i];
+            var vertex2: Vector2 = verticies[(i + 1)%verticies.length];
+
+            if(lineIntersection(vertex1, vertex2, false, ray.getAbsPosition(), ray.getGlobalTransformedCastPoint(), ray.infinite) != null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static function radiusIntersection(pos1: Vector2, pos2: Vector2, radius1: Float, radius2: Float): Bool {

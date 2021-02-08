@@ -47,7 +47,7 @@ class Entity extends Object {
         velocity.y = Math.floor(velocity.y);
         
         // * X axis collisions
-        while(isCollisionAt(new Vector2(x + velocity.x, y), screen.collisionShapes)) {
+        while(isCollisionAt(colShape, new Vector2(x + velocity.x, y), screen.collisionShapes)) {
             velocity.x = Math.max(velocity.x - 1, 0);
             if(velocity.x == 0) {
                 break;
@@ -57,7 +57,7 @@ class Entity extends Object {
         setNewPos(new Vector2(x + velocity.x, y));
         
         // * Y axis collisions
-        while(isCollisionAt(new Vector2(x, y + velocity.y), screen.collisionShapes)) {
+        while(isCollisionAt(colShape, new Vector2(x, y + velocity.y), screen.collisionShapes)) {
             velocity.y = Math.max(velocity.y - 1, 0);
             if(velocity.y == 0) {
                 break;
@@ -79,21 +79,21 @@ class Entity extends Object {
     }
 
     // & Checks collisions with all other entities
-    public function isCollisionAt(position: Vector2, shapes: Array<CollisionShape>): Bool {
+    public function isCollisionAt(collisionShape: CollisionShape, position: Vector2, shapes: Array<CollisionShape>): Bool {
         if(!colShape.active) {
             return false;
         }
         
-        var oldColShapePos: Vector2 = new Vector2(colShape.x, colShape.y);
+        var oldColShapePos: Vector2 = new Vector2(collisionShape.x, collisionShape.y);
 
-        colShape.x = position.x - x;
-        colShape.y = position.y - y;
+        collisionShape.x = position.x - x;
+        collisionShape.y = position.y - y;
         
         var isCollision: Bool = false;
         
         for(shape in shapes) {
-            if(shape != colShape && shape.active) {
-                var colTest: Bool = Collisions.test(colShape, shape);
+            if(shape != colShape) {
+                var colTest: Bool = Collisions.test(collisionShape, shape);
 
                 if(colTest) {
                     isCollision = true;
@@ -102,9 +102,47 @@ class Entity extends Object {
             }
         }
 
-        colShape.x = oldColShapePos.x;
-        colShape.y = oldColShapePos.y;
+        collisionShape.x = oldColShapePos.x;
+        collisionShape.y = oldColShapePos.y;
         return isCollision;
+    }
+
+    public function getPushVector(pushShape: CollisionShape, direction: Vector2, shapes: Array<CollisionShape>): Vector2 {
+        var steps = 0,
+            maxSteps = 100,
+            returnVector = new Vector2();
+
+        direction = direction.normalized();
+
+        var preX = pushShape.x,
+            preY = pushShape.y;
+
+        while(steps <= maxSteps) {
+            var collision: Bool = false;
+            
+            for(shape in shapes) {
+                if(shape != pushShape) {
+                    if(Collisions.test(pushShape, shape)) {
+                        collision = true;
+                        break;
+                    }
+                }
+            }
+            
+
+            if(!collision) {
+                break;
+            }
+
+            returnVector.x += direction.x;
+            returnVector.y += direction.y;
+            pushShape.x += direction.x;
+            pushShape.y += direction.y;
+            steps++;
+        }
+        pushShape.x = preX;
+        pushShape.y = preY;
+        return returnVector;
     }
 
 }

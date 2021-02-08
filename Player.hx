@@ -1,3 +1,4 @@
+import collisions.Collisions;
 import collisions.CollisionRay;
 import h2d.Tile;
 import hxd.Res;
@@ -17,7 +18,7 @@ class Player extends Entity {
 
     public var sprite: Bitmap;
 
-    public var pushRay: CollisionRay;
+    public var pushRay: CollisionPolygon;
     
     public function new(screen: Screen) {
         super(screen);
@@ -43,12 +44,13 @@ class Player extends Entity {
         colPoly.setVerticies(verts);
         colShape = colPoly;
         addChild(colShape);
-        screen.collisionShapes.push(colShape);
+        //screen.collisionShapes.push(colShape);
 
         // * Push ray
-        pushRay = new CollisionRay(x, y - colShapeHeight);
-        pushRay.setCastPoint(new Vector2(0, colShapeHeight-1));
+        pushRay = new CollisionPolygon(x, y - colShapeHeight);
+        pushRay.setVerticies([new Vector2(), new Vector2(0, colShapeHeight-1)]);
         addChild(pushRay);
+        pushRay.represent();
     }
     
     override function update(delta: Float) {
@@ -76,11 +78,14 @@ class Player extends Entity {
         velocity.y += Constants.GRAVITY*delta;
         
         // * Jump
-        if(Key.isPressed(Key.W) && isCollisionAt(new Vector2(x, y + 1), screen.collisionShapes)) {
-            velocity.y = -6;
+        if(Key.isPressed(Key.W) && isCollisionAt(pushRay, new Vector2(x, y + 1), screen.collisionShapes)) {
+            velocity.y = -8;
         }
         
         velocity = velocity.multF(delta);
         velocity = moveAndCollide(velocity);
+
+        var pushVector = getPushVector(pushRay, new Vector2(0, -1), screen.collisionShapes);
+        moveAndCollide(pushVector);
     }
 }

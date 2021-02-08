@@ -47,10 +47,6 @@ class CollisionPolygon extends CollisionShape {
         return returnVerticies;
     }
 
-    public function getRadius(): Float {
-        return radius;
-    }
-
     public function setPolyRotation(degrees: Float): Void {
 
     }

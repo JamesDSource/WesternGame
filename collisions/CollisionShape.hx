@@ -18,4 +18,8 @@ class CollisionShape extends Object {
         syncPos();
         return new Vector2(absX, absY);
     }
+
+    public function getRadius(): Float {
+        return radius;
+    }
 }
