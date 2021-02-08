@@ -6,12 +6,12 @@ class CollisionRay implements CollisionShape {
     public var y: Float;
 
     public var active: Bool = true;
-
     private var radius: Float = 0;
 
     // ^ Cast points are set in local coordinates
     private var castPoint: Vector2 = new Vector2();
     private var castPointTransformed: Vector2 = new Vector2();
+    public var infinite: Bool = false;
 
     private var scale: Vector2 = new Vector2(1, 1);
     private var rotation: Float = 0;
@@ -31,5 +31,21 @@ class CollisionRay implements CollisionShape {
 
     public function getGlobalTransformedCastPoint(): Vector2 {
         return castPointTransformed.add(new Vector2(x, y));
+    }
+
+    public function setCastPoint(point: Vector2) {
+        castPoint = point;
+        calculateTransformations();
+    }
+
+    // && Sets 'castPointTransformed' to 'castPoint' rotated and scaled
+    private function calculateTransformations() {
+        castPointTransformed = castPoint;
+        castPointTransformed = castPointTransformed.mult(scale);
+    }
+
+    public function setScale(scaleFactor: Vector2) {
+        scale = scaleFactor;
+        calculateTransformations();
     }
 }

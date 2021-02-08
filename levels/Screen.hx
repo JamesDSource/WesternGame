@@ -34,9 +34,6 @@ class Screen {
     public function new(level: LDTKLevels_Level) {
         this.level = level;
         buildScene();
-        if(hxd.res.Sound.supportedFormat(Wav)) {
-            Sys.println("Is suppored");
-        }
     }
 
     // & Initializes the scene, can also be used to reset it

@@ -27,10 +27,10 @@ class Player extends Entity {
 
         var colPoly: CollisionPolygon = new CollisionPolygon(x, y);
         var verts: Array<Vector2> = [];
-        verts.push(new Vector2(-tile.width/2, -tile.height));
-        verts.push(new Vector2(tile.width/2 - 1, -tile.height));
-        verts.push(new Vector2(tile.width/2 - 1, -tile.height + 24));
-        verts.push(new Vector2(-tile.width/2,  -tile.height + 24));
+        verts.push(new Vector2(-20/2, -tile.height));
+        verts.push(new Vector2(20/2 - 1, -tile.height));
+        verts.push(new Vector2(20/2 - 1, -tile.height + 22));
+        verts.push(new Vector2(-20/2,  -tile.height + 22));
 
         colPoly.setVerticies(verts);
         colShape = colPoly;

@@ -66,9 +66,42 @@ class Collisions { // TODO: Add cirle/poly, circle/circle, ray/poly, ray/ray, an
         return true;
     }
 
-    private static function radiusIntersection(pos1: Vector2, pos2: Vector2, radius1: Float, radius2: Float): Bool {
+    public static function radiusIntersection(pos1: Vector2, pos2: Vector2, radius1: Float, radius2: Float): Bool {
         var distance = pos1.subtract(pos2).getLength();
         return distance < radius1 + radius2;
     }
 
+    public static function lineIntersection(l1P1: Vector2, l1P2: Vector2, l1Infinite: Bool, l2P1: Vector2, l2P2: Vector2, l2Infinite: Bool): Vector2 {
+        // * Calculating standard form of the lines
+        var a1 = l1P2.y - l1P1.y,
+            b1 = l1P1.x - l1P2.x,
+            c1 = a1*l1P1.x + b1*l1P1.y,
+            a2 = l2P2.y - l2P1.y,
+            b2 = l2P1.x - l2P2.x,
+            c2 = a2*l2P1.x + b2*l2P1.y;
+        
+        // * Using the standard form to find the intersection point
+        var denominator = a1*b2 - a2*b1;
+        var x = (b2*c1 - b1*c2)/denominator,
+            y = (a1*c2 - a2*c1)/denominator;
+        if(
+            denominator != 0 &&
+            ( // * Line one is in range
+                l1Infinite ||
+                x >= Math.min(l1P1.x, l1P2.x) && x <= Math.max(l1P1.x, l1P2.x) ||   // * X is in range
+                y >= Math.min(l1P1.y, l1P2.y) && y <= Math.max(l1P1.x, l1P2.x)      // * Y is in range
+            ) &&
+            (
+                l2Infinite ||
+                x >= Math.min(l2P1.x, l2P2.x) && x <= Math.max(l2P1.x, l2P2.x) ||   // * X is in range
+                y >= Math.min(l2P1.y, l2P2.y) && y <= Math.max(l2P1.x, l2P2.x)      // * Y is in range
+            )
+            
+        ) {
+            return new Vector2(x, y);
+        }
+        else {
+            return null;
+        }
+    }
 }
