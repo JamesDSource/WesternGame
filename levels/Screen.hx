@@ -71,34 +71,31 @@ class Screen {
         var collisionRender = collisionLayer.render();
         layers.add(collisionRender, 0);
         var tileSize = collisionLayer.gridSize;
-        for(i in 0...collisionLayer.cHei) {
-            var orgPoint: Vector2 = null;
-            var colLength = 1;
-            for(j in 0...collisionLayer.cWid) {
-                var hasTile = collisionLayer.hasAnyTileAt(j, i);
+        for(i in 0...collisionLayer.cWid) {
+            for(j in 0...collisionLayer.cHei) {
+                var hasTile = collisionLayer.hasAnyTileAt(i, j);
                 if(hasTile) {
-                    if(orgPoint == null) {
-                        orgPoint =  new Vector2(j * tileSize, i * tileSize);
-                        colLength = 1;
-                    }
-                    else {
-                        colLength++;
-                    }
-                }
-                if((j >= collisionLayer.cWid - 1 || !hasTile) && orgPoint != null) {
+                    var colTile = collisionLayer.getTileStackAt(i, j);
+                    var org = new Vector2(i*tileSize, j*tileSize);
                     var verts: Array<Vector2> = [];
-
-                    verts.push(new Vector2());
-                    verts.push(new Vector2(colLength*tileSize - 1, 0));
-                    verts.push(new Vector2(colLength*tileSize - 1, tileSize - 1));
-                    verts.push(new Vector2(0, tileSize - 1));
-
-                    var staticColPoly = new CollisionPolygon(orgPoint.x, orgPoint.y);
-                    staticColPoly.setVerticies(verts);
-                    collisionShapes.push(staticColPoly);
-
-                    orgPoint = null;
-                    colLength = 1;
+                    switch(colTile[0].tileId) {
+                        case 0: // Block
+                            verts.push(new Vector2());
+                            verts.push(new Vector2(tileSize - 1, 0));
+                            verts.push(new Vector2(tileSize - 1, tileSize - 1));
+                            verts.push(new Vector2(0, tileSize - 1));
+                        case 1: // Left facing ramp
+                            verts.push(new Vector2(tileSize - 1, 0));
+                            verts.push(new Vector2(tileSize - 1, tileSize - 1));
+                            verts.push(new Vector2(0, tileSize - 1));
+                        case 2: // Rigt facing ramp
+                            verts.push(new Vector2());
+                            verts.push(new Vector2(tileSize - 1, tileSize - 1));
+                            verts.push(new Vector2(0, tileSize - 1));
+                    }
+                    var staticColShape = new CollisionPolygon(org.x, org.y);
+                    staticColShape.setVerticies(verts);
+                    collisionShapes.push(staticColShape);
                 }
             }
         }
@@ -127,7 +124,7 @@ class Screen {
 
     public function update(delta: Float) {
         var targetDelta: Float = 1/60;
-        var deltaMult = delta/targetDelta;
+        var deltaMult = Math.min(delta/targetDelta, 12);
         for(entity in entities) {
             entity.update(deltaMult);
         }

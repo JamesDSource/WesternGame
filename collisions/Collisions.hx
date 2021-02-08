@@ -1,6 +1,16 @@
 package collisions;
 
 class Collisions { // TODO: Add cirle/poly, circle/circle, ray/poly, ray/ray, and ray/circle collisions
+    public static function test(shape1: CollisionShape, shape2: CollisionShape): Bool {
+        if(Std.isOfType(shape1, CollisionPolygon) && Std.isOfType(shape2, CollisionPolygon)) {
+            return polyWithPoly(cast(shape1, CollisionPolygon), cast(shape2, CollisionPolygon));
+        }
+        else {
+            return false;
+        }
+    }
+
+
     // & Checks for a collision between two polygons
     public static function polyWithPoly(polygon1: CollisionPolygon, polygon2: CollisionPolygon): Bool {
         if(!radiusIntersection(new Vector2(polygon1.x, polygon1.y), new Vector2(polygon2.x, polygon2.y), polygon1.getRadius(), polygon2.getRadius())) {

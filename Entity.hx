@@ -14,7 +14,7 @@ class Entity extends Object {
     public var hitPointsMax: Float = 100;
     public var hitPoints: Float = 100;
 
-    public var colShape: CollisionPolygon;
+    public var colShape: CollisionShape;
 
     private var screen: Screen;
 
@@ -91,7 +91,7 @@ class Entity extends Object {
         
         for(shape in shapes) {
             if(shape != colShape && shape.active) {
-                var colTest: Bool = colShape.testWith(shape);
+                var colTest: Bool = Collisions.test(colShape, shape);
 
                 if(colTest) {
                     isCollision = true;

@@ -60,17 +60,6 @@ class CollisionPolygon implements CollisionShape {
 
     }
 
-    // & Checks if it's colliding with another shape
-    public function testWith(collisionShape: CollisionShape): Bool {
-        switch shapeName {
-            case "Polygon":
-                return Collisions.polyWithPoly(this, cast(collisionShape, CollisionPolygon));
-            default:
-                Sys.println('Unknown shape tested with $this');
-                return false;
-        }
-    }
-
     public function setScale(scaleFactor: Vector2) {
         for(vertex in verticies) {
             vertex = vertex.mult(scaleFactor);

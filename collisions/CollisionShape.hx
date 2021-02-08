@@ -8,5 +8,4 @@ interface CollisionShape {
     public var x: Float;
     public var y: Float;
     private var radius: Float;
-    public function testWith(collisionShape: CollisionShape): Bool;
 }

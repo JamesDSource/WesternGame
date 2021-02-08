@@ -32,16 +32,4 @@ class CollisionRay implements CollisionShape {
     public function getGlobalTransformedCastPoint(): Vector2 {
         return castPointTransformed.add(new Vector2(x, y));
     }
-
-    public function setRotation(degrees: Float) {
-
-    }
-
-    public function testWith(collisionShape: CollisionShape): Bool {
-        return false;
-    }
-
-    public function setScale(scaleFactor: Vector2) {
-
-    }
 }
