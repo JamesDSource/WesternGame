@@ -4,7 +4,7 @@ import h2d.Tile;
 import h2d.Bitmap;
 import collisions.CollisionShape;
 
-// TODO: Make scaling and rotation work
+// TODO: Make rotation work
 class CollisionPolygon extends CollisionShape {
     // ^ The points that define the polygon
     // * All verticies are relative to the x/y position
@@ -13,7 +13,6 @@ class CollisionPolygon extends CollisionShape {
     private var transformedVerticies: Array<Vector2> = [];
 
     // ^ Transformation data
-    private var polyScale: Vector2 = new Vector2(1.0, 1.0);
     private var polyRotation: Float = 0;
 
     public function new(x: Float, y: Float) {
@@ -48,10 +47,6 @@ class CollisionPolygon extends CollisionShape {
     }
 
     public function setPolyRotation(degrees: Float): Void {
-
-    }
-
-    public function setPolyScale(scaleFactor: Vector2) {
 
     }
 

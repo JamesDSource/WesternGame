@@ -1,3 +1,4 @@
+import h3d.pass.Default;
 import h2d.Anim;
 import collisions.Collisions;
 import collisions.CollisionRay;
@@ -11,11 +12,17 @@ import h2d.Layers;
 import collisions.CollisionPolygon;
 import levels.Screen;
 
+enum PLAYERSTATE {
+    FREE;
+    DEAD;
+}
+
 class Player extends Entity {
     private var velocity: Vector2 = new Vector2();
     private var speed: Float = 3.0;
     private var acceleration: Float = 0.5;
-    public var canMove: Bool = true;
+    
+    public var state = PLAYERSTATE.FREE;
 
     // ^ Holds all animations
     public var animations: AnimationPlayer;
@@ -69,8 +76,11 @@ class Player extends Entity {
     override function update(delta: Float) {
         super.update(delta);
 
-        if(canMove) {
-            getMovement(delta);
+        switch(state) {
+            case PLAYERSTATE.FREE:
+                getMovement(delta);
+                
+            case PLAYERSTATE.DEAD:
         }
     }
     
@@ -87,6 +97,10 @@ class Player extends Entity {
         
         movementVector = movementVector.normalized().multF(speed);
         
+        if(movementVector.x != 0) { // TODO: Move to a seperate function that handles all animations
+            animations.setFlipped(movementVector.x < 0);
+        }
+
         velocity.x = Interpolate.interpolateF(velocity.x, movementVector.x, acceleration*delta);
         velocity.y += Constants.GRAVITY*delta;
         

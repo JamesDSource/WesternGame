@@ -17,6 +17,8 @@ enum Origin {
 class AnimationPlayer extends Object {
     
     public var animations: Map<String, Anim> = [];
+    private var flipped: Bool = false;
+
     public function new() {
         super();
     }
@@ -63,7 +65,24 @@ class AnimationPlayer extends Object {
         addChild(newAnim);
         newAnim.x = 0;
         newAnim.y = 0;
-
+        
         animations[name] = newAnim;
+    }
+
+    public function isFlipped(): Bool {
+        return flipped;
+    }
+
+    public function setFlipped(flipped) {
+        if(this.flipped != flipped) {
+            for(animKey in animations.keys()) {
+                var anim: Anim = animations[animKey];
+                var frames: Array<Tile> = anim.frames;
+                for(frame in frames) {
+                    frame.flipX();
+                }
+            }
+            this.flipped = flipped;
+        }
     }
 }
