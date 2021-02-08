@@ -1,3 +1,4 @@
+import h2d.Anim;
 import collisions.Collisions;
 import collisions.CollisionRay;
 import h2d.Tile;
@@ -16,30 +17,42 @@ class Player extends Entity {
     private var acceleration: Float = 0.5;
     public var canMove: Bool = true;
 
-    public var sprite: Bitmap;
+    // ^ Holds all animations
+    public var animations: AnimationPlayer;
 
     public var pushRay: CollisionPolygon;
     
     public function new(screen: Screen) {
         super(screen);
 
-        var tile = Res.Player_png.toTile();
-        sprite = new Bitmap(tile);
-        sprite.x = x - tile.width/2;
-        sprite.y = y - tile.height;
-        addChild(sprite);
+        // * Animations
+        animations = new AnimationPlayer();
+        addChild(animations);
+        animations.addAnimation(
+            "Lower still",
+            Res.PlayerLowerStill.toTile(),
+            1,
+            AnimationPlayer.Origin.bottomCenter
+        );
+        animations.addAnimation(
+            "Upper idle",
+            Res.PlayerUpperIdle.toTile(),
+            3,
+            AnimationPlayer.Origin.bottomCenter
+        );
+        animations.animations["Upper idle"].speed = 3;
 
         var pushRayHeight: Float = 20;
-        var colShapeHeight: Float = tile.height - pushRayHeight;
+        var colShapeHeight: Float = 42 - pushRayHeight;
         var colShapeWidth: Float = 20;
 
         // * Collision polygon
         var colPoly: CollisionPolygon = new CollisionPolygon(x, y);
         var verts: Array<Vector2> = [];
-        verts.push(new Vector2(-colShapeWidth/2, -tile.height));
-        verts.push(new Vector2(colShapeWidth/2 - 1, -tile.height));
-        verts.push(new Vector2(colShapeWidth/2 - 1, -tile.height + colShapeHeight));
-        verts.push(new Vector2(-colShapeWidth/2,  -tile.height + colShapeHeight));
+        verts.push(new Vector2(-colShapeWidth/2, -42));
+        verts.push(new Vector2(colShapeWidth/2 - 1, -42));
+        verts.push(new Vector2(colShapeWidth/2 - 1, -42 + colShapeHeight));
+        verts.push(new Vector2(-colShapeWidth/2,  -42 + colShapeHeight));
         
         colPoly.setVerticies(verts);
         colShape = colPoly;
