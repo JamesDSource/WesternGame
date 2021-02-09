@@ -113,13 +113,13 @@ class Collisions { // TODO: Add cirle/poly, circle/circle, ray/poly, ray/ray, an
             denominator != 0 &&
             ( // * Line one is in range
                 l1Infinite ||
-                x >= Math.min(l1P1.x, l1P2.x) && x <= Math.max(l1P1.x, l1P2.x) ||   // * X is in range
-                y >= Math.min(l1P1.y, l1P2.y) && y <= Math.max(l1P1.x, l1P2.x)      // * Y is in range
+                (x >= Math.min(l1P1.x, l1P2.x) && x <= Math.max(l1P1.x, l1P2.x) &&   // * X is in range
+                y >= Math.min(l1P1.y, l1P2.y) && y <= Math.max(l1P1.y, l1P2.y))      // * Y is in range
             ) &&
             (
                 l2Infinite ||
-                x >= Math.min(l2P1.x, l2P2.x) && x <= Math.max(l2P1.x, l2P2.x) ||   // * X is in range
-                y >= Math.min(l2P1.y, l2P2.y) && y <= Math.max(l2P1.x, l2P2.x)      // * Y is in range
+                (x >= Math.min(l2P1.x, l2P2.x) && x <= Math.max(l2P1.x, l2P2.x) &&   // * X is in range
+                y >= Math.min(l2P1.y, l2P2.y) && y <= Math.max(l2P1.y, l2P2.y))     // * Y is in range
             )
             
         ) {

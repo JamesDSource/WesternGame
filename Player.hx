@@ -27,7 +27,7 @@ class Player extends Entity {
     // ^ Holds all animations
     public var animations: AnimationPlayer;
 
-    public var pushRay: CollisionPolygon;
+    public var pushRay: CollisionRay;
     
     public function new(screen: Screen) {
         super(screen);
@@ -66,9 +66,9 @@ class Player extends Entity {
         addChild(colShape);
         //screen.collisionShapes.push(colShape);
 
-        // * Push ray
-        pushRay = new CollisionPolygon(x, y - colShapeHeight);
-        pushRay.setVerticies([new Vector2(), new Vector2(0, colShapeHeight-1)]);
+        // * Push ray 
+        pushRay = new CollisionRay(x, y - 1, false);
+        pushRay.setCastPoint(new Vector2(0, -colShapeHeight));
         addChild(pushRay);
         pushRay.represent();
     }
