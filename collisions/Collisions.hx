@@ -1,6 +1,6 @@
 package collisions;
 
-class Collisions { // TODO: Add cirle/poly, circle/circle, ray/poly, ray/ray, and ray/circle collisions
+class Collisions { // TODO: Add cirle/poly, circle/circle, ray/ray, and ray/circle collisions
     public static function test(shape1: CollisionShape, shape2: CollisionShape): Bool {
         var absPos1 = shape1.getAbsPosition();
         var absPos2 = shape2.getAbsPosition();
@@ -12,17 +12,40 @@ class Collisions { // TODO: Add cirle/poly, circle/circle, ray/poly, ray/ray, an
         if(Std.isOfType(shape1, CollisionPolygon) && Std.isOfType(shape2, CollisionPolygon)) {
             return polyWithPoly(cast(shape1, CollisionPolygon), cast(shape2, CollisionPolygon));
         }
+        // * Ray with ray
+        else if(Std.isOfType(shape1, CollisionRay) && Std.isOfType(shape2, CollisionRay)) {
+            return rayWithRay(cast(shape1, CollisionRay), cast(shape2, CollisionRay)) != null;
+        }
         // * Poly with ray
         else if(Std.isOfType(shape1, CollisionPolygon) && Std.isOfType(shape2, CollisionRay)) {
-            return polyWithRay(cast(shape1, CollisionPolygon), cast(shape2, CollisionRay));
+            return polyWithRay(cast(shape1, CollisionPolygon), cast(shape2, CollisionRay)) != null;
         }
         // * Ray with poly
         else if(Std.isOfType(shape1, CollisionRay) && Std.isOfType(shape2, CollisionPolygon)) {
-            return polyWithRay(cast(shape2, CollisionPolygon), cast(shape1, CollisionRay));
+            return polyWithRay(cast(shape2, CollisionPolygon), cast(shape1, CollisionRay)) != null;
         }
         else {
             Sys.println("Unknown collision combination");
             return false;
+        }
+    }
+
+    // & Tests for an intersection with a ray, and returns the point of collision
+    public static function rayTestIntersection(ray: CollisionRay, shape: CollisionShape): Vector2 {
+        var absPos1 = ray.getAbsPosition();
+        var absPos2 = shape.getAbsPosition();
+        if(!radiusIntersection(absPos1, absPos2, ray.getRadius(), shape.getRadius())) {
+            return null;
+        }
+
+        if(Std.isOfType(shape, CollisionPolygon)) {
+            return polyWithRay(cast(shape, CollisionPolygon), ray);
+        }
+        else if(Std.isOfType(shape, CollisionRay)) {
+            return rayWithRay(ray, cast(shape, CollisionRay));
+        }
+        else {
+            return null;
         }
     }
 
@@ -78,17 +101,38 @@ class Collisions { // TODO: Add cirle/poly, circle/circle, ray/poly, ray/ray, an
         return true;
     }
 
-    public static function polyWithRay(poly: CollisionPolygon, ray: CollisionRay): Bool {
+    public static function rayWithRay(ray1: CollisionRay, ray2: CollisionRay): Vector2 {
+        return lineIntersection(
+            ray1.getAbsPosition(), 
+            ray1.getGlobalTransformedCastPoint(), 
+            ray1.infinite,
+            ray2.getAbsPosition(),
+            ray2.getGlobalTransformedCastPoint(),
+            ray2.infinite
+        );
+    }
+
+    public static function polyWithRay(poly: CollisionPolygon, ray: CollisionRay): Vector2 {
         var verticies: Array<Vector2> = poly.getGlobalTransformedVerticies();
+        var closestIntersection: Vector2 = null;
+        var rayPos = ray.getAbsPosition();
+
+        if(pointInPolygon(verticies, rayPos)) {
+            return rayPos;
+        }
+
         for(i in 0...verticies.length) {
             var vertex1: Vector2 = verticies[i];
             var vertex2: Vector2 = verticies[(i + 1)%verticies.length];
 
-            if(lineIntersection(vertex1, vertex2, false, ray.getAbsPosition(), ray.getGlobalTransformedCastPoint(), ray.infinite) != null) {
-                return true;
+            var intersection = lineIntersection(vertex1, vertex2, false, ray.getAbsPosition(), ray.getGlobalTransformedCastPoint(), ray.infinite);
+            
+            if(intersection != null && ( closestIntersection == null || 
+            intersection.subtract(rayPos).getLength() < closestIntersection.subtract(rayPos).getLength())) {
+                closestIntersection = intersection;
             }
         }
-        return false;
+        return closestIntersection;
     }
 
     public static function radiusIntersection(pos1: Vector2, pos2: Vector2, radius1: Float, radius2: Float): Bool {
@@ -128,5 +172,33 @@ class Collisions { // TODO: Add cirle/poly, circle/circle, ray/poly, ray/ray, an
         else {
             return null;
         }
+    }
+
+    public static function pointInTriangle(a: Vector2, b: Vector2, c: Vector2, point: Vector2): Bool {
+        var w1: Float = a.x*(c.y - a.y) + (point.y - a.y)*(c.x - a.x) - point.x*(c.y - a.y);
+        w1 /= (b.y - a.y)*(c.x - a.x) - (b.x - a.x)*(c.y - a.y);
+
+        var w2: Float = point.y - a.y - w1*(b.y - a.y);
+        w2 /= c.y - a.y;
+
+        return  w1 >= 0 && 
+                w2 >= 0 && 
+                (w1 + w2) <= 1;
+    }
+
+    public static function pointInPolygon(verticies: Array<Vector2>, point: Vector2): Bool {
+        if(verticies.length >= 3) {
+            var p1: Vector2 = verticies[0];
+
+            for(i in 2...verticies.length) {
+                var p2: Vector2 = verticies[i - 1],
+                    p3: Vector2 = verticies[i];
+                
+                if(pointInTriangle(p1, p2, p3, point)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

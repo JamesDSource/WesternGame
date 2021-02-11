@@ -118,7 +118,7 @@ class Screen {
 
     public function update(delta: Float) {
         var targetDelta: Float = 1/60;
-        var deltaMult = Math.min(delta/targetDelta, 12);
+        var deltaMult = Math.min(delta/targetDelta, 6);
         for(entity in entities) {
             entity.update(deltaMult);
         }

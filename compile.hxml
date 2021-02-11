@@ -5,4 +5,5 @@
 -lib quadtree
 -hl Compiled/WesternGame.hl
 -main Main
+-D windowSize=1920x1080
 -debug
