@@ -13,8 +13,7 @@ class CollisionRay extends CollisionShape {
 
     public function new(x: Float, y: Float, infinite: Bool = false) {
         super(x, y);
-        this.infinite = infinite;
-        shapeName = "Ray";        
+        this.infinite = infinite;       
     }
 
     public function getCastPoint(): Vector2 {

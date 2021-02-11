@@ -55,6 +55,9 @@ class Player extends Entity {
 
         // * Collision polygon
         var colPoly: CollisionPolygon = new CollisionPolygon(x, y);
+        colPoly.tags.push("player");
+        colPoly.ignoreTags.push("player");
+        
         var verts: Array<Vector2> = [];
         verts.push(new Vector2(-colShapeWidth/2, -42));
         verts.push(new Vector2(colShapeWidth/2 - 1, -42));
@@ -64,10 +67,12 @@ class Player extends Entity {
         colPoly.setVerticies(verts);
         colShape = colPoly;
         addChild(colShape);
-        //screen.collisionShapes.push(colShape);
+        screen.collisionShapes.push(colShape);
 
         // * Push ray 
         pushRay = new CollisionRay(x, y - 1, false);
+        pushRay.tags.push("player");
+        pushRay.ignoreTags.push("player");
         pushRay.setCastPoint(new Vector2(0, -colShapeHeight));
         addChild(pushRay);
         pushRay.represent();
@@ -105,7 +110,7 @@ class Player extends Entity {
         velocity.y += Constants.GRAVITY*delta;
         
         // * Jump
-        if(Key.isPressed(Key.W) && isCollisionAt(pushRay, new Vector2(x, y + 1), screen.collisionShapes)) {
+        if(Key.isPressed(Key.W) && (isCollisionAt(pushRay, new Vector2(x, y + 1), screen.collisionShapes) || isCollisionAt(colShape, new Vector2(x, y + 1), screen.collisionShapes))) {
             velocity.y = -8;
         }
         

@@ -2,6 +2,10 @@ package collisions;
 
 class Collisions { // TODO: Add cirle/poly, circle/circle, ray/ray, and ray/circle collisions
     public static function test(shape1: CollisionShape, shape2: CollisionShape): Bool {
+        if(!shape1.canInteractWith(shape2)) {
+            return false;
+        }
+
         var absPos1 = shape1.getAbsPosition();
         var absPos2 = shape2.getAbsPosition();
         if(!radiusIntersection(absPos1, absPos2, shape1.getRadius(), shape2.getRadius())) {
@@ -32,6 +36,10 @@ class Collisions { // TODO: Add cirle/poly, circle/circle, ray/ray, and ray/circ
 
     // & Tests for an intersection with a ray, and returns the point of collision
     public static function rayTestIntersection(ray: CollisionRay, shape: CollisionShape): Vector2 {
+        if(!ray.canInteractWith(shape)) {
+            return null;
+        }
+
         var absPos1 = ray.getAbsPosition();
         var absPos2 = shape.getAbsPosition();
         if(!radiusIntersection(absPos1, absPos2, ray.getRadius(), shape.getRadius())) {

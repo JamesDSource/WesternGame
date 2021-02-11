@@ -17,7 +17,6 @@ class CollisionPolygon extends CollisionShape {
 
     public function new(x: Float, y: Float) {
         super(x, y);
-        shapeName = "Polygon";
     }
 
     public function getVerticies(): Array<Vector2> {
