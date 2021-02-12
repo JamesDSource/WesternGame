@@ -27,11 +27,11 @@ class Player extends Entity {
     // ^ Holds all animations
     public var animations: AnimationPlayer;
 
+    // ^ A ray used to keep the player on top of ramps and such
     public var pushRay: CollisionRay;
 
+    // ^ Used to aim the gun
     public var aimRay: CollisionRay;
-
-    public var testSprite: Bitmap;
     
     public function new(screen: Screen) {
         super(screen);
@@ -87,10 +87,6 @@ class Player extends Entity {
         aimRay.ignoreTags.push("player");
         addChild(aimRay);
         aimRay.represent();
-
-        testSprite = new Bitmap(Tile.fromColor(0xFF0000));
-        //screen.layers.add(testSprite, 4);
-        aimRay.addChild(testSprite);
     }
     
     override function update(delta: Float) {
@@ -115,7 +111,7 @@ class Player extends Entity {
                         }
                     }  
                     if(hitPoint != null) {
-                        screen.addEntity(new HitSpark(screen, hitPoint.x, hitPoint.y), 2);
+                        screen.addEntity(new BulletTrail(screen, aimPos.x, aimPos.y, hitPoint.subtract(aimPos)), 2);
                     }
                 }
 
@@ -140,15 +136,14 @@ class Player extends Entity {
             animations.setFlipped(movementVector.x < 0);
         }
 
-        velocity.x = Interpolate.interpolateF(velocity.x, movementVector.x, acceleration*delta);
-        velocity.y += Constants.GRAVITY*delta;
+        velocity.x = Interpolate.interpolateF(velocity.x, movementVector.x, acceleration);
+        velocity.y += Constants.GRAVITY;
         
         // * Jump
         if(Key.isPressed(Key.W) && (isCollisionAt(pushRay, new Vector2(x, y + 1), screen.collisionShapes) || isCollisionAt(colShape, new Vector2(x, y + 1), screen.collisionShapes))) {
             velocity.y = -8;
         }
         
-        velocity = velocity.multF(delta);
         velocity = moveAndCollide(velocity);
 
         var pushVector = getPushVector(pushRay, new Vector2(0, -1), screen.collisionShapes);

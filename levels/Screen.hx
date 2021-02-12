@@ -126,6 +126,12 @@ class Screen {
 
     public function addEntity(entity: Entity, layer: Int) {
         layers.add(entity, layer);
-        entities.push(entity);
+        entities.push(entity); 
+    }
+
+    public function removeEntity(entity: Entity) {
+        entity.cleanUp();
+        entities.remove(entity);
+        layers.removeChild(entity);
     }
 }

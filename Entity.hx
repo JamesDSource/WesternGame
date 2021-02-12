@@ -32,9 +32,15 @@ class Entity extends Object {
         this.screen = screen;
     }
 
-    // & Called every frame. To be overriden by a child.
+    // & Called every frame. To be overriden by a child
     public function update(delta: Float) { 
         deltaMult = delta;
+    }
+
+    // & Gets called when the entity is removed from the screen.
+    // & To be overriden by a child
+    public function cleanUp() {
+
     }
 
     // & Moves in a direction and stops to collide

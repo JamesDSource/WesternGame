@@ -43,6 +43,15 @@ class Vector2 {
         return new Vector2(x, y);
     }
 
+    public function angleTo(vector2: Vector2): Float {
+        var transformationVector: Vector2 = vector2.subtract(this);
+        return transformationVector.getAngle();
+    }
+
+    public function getAngle(): Float {
+        return Math.atan2(y, x);
+    }
+
     // & Vector math functions
     public function add(vector2: Vector2): Vector2 {
         return new Vector2(x + vector2.x, y + vector2.y);
