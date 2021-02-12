@@ -120,7 +120,7 @@ class Collisions { // TODO: Add cirle/poly, circle/circle, ray/ray, and ray/circ
         );
     }
 
-    public static function polyWithRay(poly: CollisionPolygon, ray: CollisionRay): Vector2 {
+    public static function polyWithRay(poly: CollisionPolygon, ray: CollisionRay): Vector2 {    
         var verticies: Array<Vector2> = poly.getGlobalTransformedVerticies();
         var closestIntersection: Vector2 = null;
         var rayPos = ray.getAbsPosition();
@@ -133,10 +133,9 @@ class Collisions { // TODO: Add cirle/poly, circle/circle, ray/ray, and ray/circ
             var vertex1: Vector2 = verticies[i];
             var vertex2: Vector2 = verticies[(i + 1)%verticies.length];
 
-            var intersection = lineIntersection(vertex1, vertex2, false, ray.getAbsPosition(), ray.getGlobalTransformedCastPoint(), ray.infinite);
-            
-            if(intersection != null && ( closestIntersection == null || 
-            intersection.subtract(rayPos).getLength() < closestIntersection.subtract(rayPos).getLength())) {
+            var intersection = lineIntersection(vertex1, vertex2, false, rayPos, ray.getGlobalTransformedCastPoint(), ray.infinite);
+            if(intersection != null && ( closestIntersection == null || intersection.subtract(rayPos).getLength() < closestIntersection.subtract(rayPos).getLength())) {
+                
                 closestIntersection = intersection;
             }
         }
@@ -159,22 +158,19 @@ class Collisions { // TODO: Add cirle/poly, circle/circle, ray/ray, and ray/circ
         
         // * Using the standard form to find the intersection point
         var denominator = a1*b2 - a2*b1;
+
+        if(denominator == 0) {
+            return null;
+        }
+
         var x = (b2*c1 - b1*c2)/denominator,
-            y = (a1*c2 - a2*c1)/denominator;
-        if(
-            denominator != 0 &&
-            ( // * Line one is in range
-                l1Infinite ||
-                (x >= Math.min(l1P1.x, l1P2.x) && x <= Math.max(l1P1.x, l1P2.x) &&   // * X is in range
-                y >= Math.min(l1P1.y, l1P2.y) && y <= Math.max(l1P1.y, l1P2.y))      // * Y is in range
-            ) &&
-            (
-                l2Infinite ||
-                (x >= Math.min(l2P1.x, l2P2.x) && x <= Math.max(l2P1.x, l2P2.x) &&   // * X is in range
-                y >= Math.min(l2P1.y, l2P2.y) && y <= Math.max(l2P1.y, l2P2.y))     // * Y is in range
-            )
-            
-        ) {
+            y = (a1*c2 - a2*c1)/denominator,
+            rx0 = (x - l1P1.x) / (l1P2.x - l1P1.x),
+            ry0 = (y - l1P1.y) / (l1P2.y - l1P1.y),
+            rx1 = (x - l2P1.x) / (l2P2.x - l2P1.x),
+            ry1 = (y - l2P1.y) / (l2P2.y - l2P1.y);
+        
+        if(((rx0 >= 0 && rx0 <= 1) || (ry0 >= 0 && ry0 <=1)) && ((rx1 >= 0 && rx1 <= 1) || (ry1 >= 0 && ry1 <=1))) {
             return new Vector2(x, y);
         }
         else {

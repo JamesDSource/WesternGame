@@ -123,4 +123,9 @@ class Screen {
             entity.update(deltaMult);
         }
     }
+
+    public function addEntity(entity: Entity, layer: Int) {
+        layers.add(entity, layer);
+        entities.push(entity);
+    }
 }

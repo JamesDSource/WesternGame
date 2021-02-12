@@ -28,6 +28,10 @@ class Player extends Entity {
     public var animations: AnimationPlayer;
 
     public var pushRay: CollisionRay;
+
+    public var aimRay: CollisionRay;
+
+    public var testSprite: Bitmap;
     
     public function new(screen: Screen) {
         super(screen);
@@ -76,6 +80,17 @@ class Player extends Entity {
         pushRay.setCastPoint(new Vector2(0, -colShapeHeight));
         addChild(pushRay);
         pushRay.represent();
+
+        // * Aim ray
+        aimRay = new CollisionRay(x, y - 16, false);
+        aimRay.tags.push("player");
+        aimRay.ignoreTags.push("player");
+        addChild(aimRay);
+        aimRay.represent();
+
+        testSprite = new Bitmap(Tile.fromColor(0xFF0000));
+        //screen.layers.add(testSprite, 4);
+        aimRay.addChild(testSprite);
     }
     
     override function update(delta: Float) {
@@ -84,7 +99,26 @@ class Player extends Entity {
         switch(state) {
             case PLAYERSTATE.FREE:
                 getMovement(delta);
-                
+
+                if(Key.isPressed(Key.MOUSE_LEFT)) {
+                    var mx = screen.scene.mouseX;
+                    var my = screen.scene.mouseY;
+                    var aimPos = aimRay.getAbsPosition();
+                    aimRay.setCastPoint(new Vector2(mx, my).subtract(aimPos).normalized().multF(1000));
+
+
+                    var hitPoint: Vector2 = null;
+                    for(shape in screen.collisionShapes) {
+                        var colPoint = Collisions.rayTestIntersection(aimRay, shape);
+                        if(colPoint != null && (hitPoint == null || colPoint.subtract(aimPos).getLength() < hitPoint.subtract(aimPos).getLength())) {
+                            hitPoint = colPoint;
+                        }
+                    }  
+                    if(hitPoint != null) {
+                        screen.addEntity(new HitSpark(screen, hitPoint.x, hitPoint.y), 2);
+                    }
+                }
+
             case PLAYERSTATE.DEAD:
         }
     }
