@@ -18,6 +18,7 @@ class BulletTrail extends Entity {
         this.y = y;
         this.goTo = goTo;
         var tile = Res.BulletTrail.toTile();
+        tile.dy = -1;
         tile.scaleToSize(goTo.getLength(), 2);
         new Bitmap(tile, this);
 
@@ -26,6 +27,9 @@ class BulletTrail extends Entity {
 
     public override function update(delta: Float) {
         super.update(delta);
+        
+        // TODO: Create a shader that smooths the alpha starting from the start of the trail
+        // TODO: instead of just adjusting the entire alpha
         alpha = Interpolate.interpolateF(alpha, 0, 0.1);
         if(alpha <= 0) {
             screen.removeEntity(this);
