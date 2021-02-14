@@ -14,7 +14,7 @@
 	"defaultGridSize": 32,
 	"bgColor": "#676877",
 	"defaultLevelBgColor": "#7F8093",
-	"nextUid": 9,
+	"nextUid": 10,
 	"minifyJson": false,
 	"externalLevels": false,
 	"exportTiled": false,
@@ -69,6 +69,23 @@
 				"width": 32,
 				"height": 42,
 				"color": "#94D9B3",
+				"renderMode": "Ellipse",
+				"showName": true,
+				"tilesetId": null,
+				"tileId": null,
+				"tileRenderMode": "Stretch",
+				"maxPerLevel": 0,
+				"limitBehavior": "DiscardOldOnes",
+				"pivotX": 0.5,
+				"pivotY": 1,
+				"fieldDefs": []
+			},
+			{
+				"identifier": "Rifleman",
+				"uid": 9,
+				"width": 32,
+				"height": 32,
+				"color": "#FD2500",
 				"renderMode": "Ellipse",
 				"showName": true,
 				"tilesetId": null,
@@ -134,7 +151,10 @@
 					"autoLayerTiles": [],
 					"seed": 7254264,
 					"gridTiles": [],
-					"entityInstances": [{ "__identifier": "Player", "__grid": [7,9], "__pivot": [0.5,1], "__tile": null, "defUid": 4, "px": [240,320], "fieldInstances": [] }]
+					"entityInstances": [
+						{ "__identifier": "Player", "__grid": [5,12], "__pivot": [0.5,1], "__tile": null, "defUid": 4, "px": [176,416], "fieldInstances": [] },
+						{ "__identifier": "Rifleman", "__grid": [16,10], "__pivot": [0.5,1], "__tile": null, "defUid": 9, "px": [528,352], "fieldInstances": [] }
+					]
 				},
 				{
 					"__identifier": "Collisions",

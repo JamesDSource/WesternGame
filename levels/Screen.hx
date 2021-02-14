@@ -105,9 +105,18 @@ class Screen {
             player.setNewPos(new Vector2(playerEnt.pixelX, playerEnt.pixelY));
 
             // * Adding to the scene
-            layers.add(player, 1);
-            entities.push(player);
+            addEntity(player, 1);
             cam.follow = player;
+        }
+
+        // * Rifleman
+        var riflemen: Array<Entity_Rifleman> = level.l_Entities.all_Rifleman;
+        for(rifleman in riflemen) {
+            var newRifleman = new Rifleman(this);
+            newRifleman.setNewPos(new Vector2(rifleman.pixelX, rifleman.pixelY));
+
+            // * Adding to the scene
+            addEntity(newRifleman, 1);
         }
 
         for(shape in collisionShapes) {

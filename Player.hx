@@ -59,8 +59,6 @@ class Player extends Entity {
 
         // * Collision polygon
         var colPoly: CollisionPolygon = new CollisionPolygon(x, y);
-        colPoly.tags.push("player");
-        colPoly.ignoreTags.push("player");
         
         var verts: Array<Vector2> = [];
         verts.push(new Vector2(-colShapeWidth/2, -42));
@@ -71,20 +69,16 @@ class Player extends Entity {
         colPoly.setVerticies(verts);
         colShape = colPoly;
         addChild(colShape);
-        screen.collisionShapes.push(colShape);
 
         // * Push ray 
         pushRay = new CollisionRay(x, y - 1, false);
-        pushRay.tags.push("player");
-        pushRay.ignoreTags.push("player");
+        pushRay.ignoreTags.push("hitbox");
         pushRay.setCastPoint(new Vector2(0, -colShapeHeight));
         addChild(pushRay);
         pushRay.represent();
 
         // * Aim ray
         aimRay = new CollisionRay(x, y - 16, false);
-        aimRay.tags.push("player");
-        aimRay.ignoreTags.push("player");
         addChild(aimRay);
         aimRay.represent();
     }
