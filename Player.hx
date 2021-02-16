@@ -68,6 +68,7 @@ class Player extends Entity {
         
         colPoly.setVerticies(verts);
         colShape = colPoly;
+        colShape.ignoreTags.push("hitbox");
         addChild(colShape);
 
         // * Push ray 
